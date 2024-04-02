@@ -54,6 +54,23 @@ public class Board {
 		piece.position = position;
 	}
 	
+	public Piece removePiece(Position position) {
+		if (!positionExists(position)) {
+			throw new BoardException("Position not on the board");
+		}
+		//se não tiver peça retorna null
+		if (piece(position) == null) {
+			return null;
+		}
+		//variavel aux tipo piece recebe uma peça, em seguida variavel aux nessa position recebe null
+		//
+		Piece aux = piece(position);
+		aux.position = null;
+		pieces[position.getRow()][position.getColumn()] = null;
+		return aux;
+		
+	}
+	
 	//mais facil de testar pela linha e coluna 
 	private boolean positionExists(int row, int column) {
 		//condição para a posição existir 
@@ -73,4 +90,6 @@ public class Board {
 		//se a peça for diferente de null é pq há uma peça naquele lugar e não um espaço vazio
 		return piece(position) != null; 
 	}
+	
+	
 }

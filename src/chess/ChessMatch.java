@@ -1,6 +1,8 @@
 package chess;
 
 import boardgame.Board;
+import boardgame.Piece;
+import boardgame.Position;
 import chess.pieces.King;
 import chess.pieces.Rook;
 
@@ -24,6 +26,37 @@ public class ChessMatch {
 			}
 		}
 		return mat;
+	}
+	
+	public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition) {
+		//primeiro converter as posições para posição de matriz (letra, numero) para (numero, numero)
+		Position source = sourcePosition.toPosition();
+		Position target = targetPosition.toPosition();
+		//validar se na posição havia uma peça
+		validateSourcePosition(source);
+		Piece capturedPiece = makeMove(source, target);
+		return (ChessPiece)capturedPiece;
+	}
+	
+	private Piece makeMove(Position source, Position target) {
+		//retirar a peça que está na posição de origem
+		Piece p = board.removePiece(source);
+		//remover uma possivel peça da posição de destino
+		Piece capturedPiece = board.removePiece(target);
+		//agora colocar a peça de origem na posição de destino
+		board.placePiece(p, target);
+		return capturedPiece;
+	}
+	
+	private void validateSourcePosition(Position position) {
+		//o proprio thereIsAPiece pode dar uma exception de BoardException
+		//e a minha validação lança uma ChessException mas eu posso considerar que uma
+		//exception de xadrez tambem é uma exception de tabuleiro 
+		//então posso atualizar ChessException de RuntimeException para BoardException
+		//e ai quando eu pegar uma ChessException tb pego uma BoardException
+		if (!board.thereIsAPiece(position)) {
+			throw new ChessException("There is no piece on source position");
+		}
 	}
 	
 	private void placeNewPiece(char column, int row, ChessPiece piece) {
